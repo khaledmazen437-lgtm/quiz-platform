@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة MHD للاختبارات</title>
+    <!-- استدعاء خط Cairo عشان يخلي شكل الكلام رايق ومحترف -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --success: #10b981;
+            --error: #ef4444;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- الهيدر (Header) --- */
+        header {
+            background: var(--card-bg);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo::before {
+            content: '';
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+        }
+
+        .quiz-info {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            background: #eff6ff;
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid #bfdbfe;
+        }
+
+        /* --- المحتوى الرئيسي --- */
+        .container {
+            max-width: 900px;
+            width: 100%;
+            margin: 40px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+
+        #quiz-container {
+            margin-bottom: 30px;
+        }
+
+        /* --- كارت السؤال (Question Card) --- */
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        .question-title {
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--text-main);
+            margin-bottom: 18px;
+            line-height: 1.6;
+        }
+
+        /* --- الاختيارات --- */
+        .options-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .option:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .option input[type="radio"] {
+            margin-left: 12px;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        /* --- حالة الإجابات عند التصحيح --- */
+        .option.correct-choice {
+            background-color: #ecfdf5 !important;
+            border-color: var(--success) !important;
+            color: #065f46;
+        }
+
+        .option.wrong-choice {
+            background-color: #fef2f2 !important;
+            border-color: var(--error) !important;
+            color: #991b1b;
+        }
+
+        .answer-hint {
+            display: none;
+            margin-top: 15px;
+            padding: 10px 15px;
+            background: #fffbeb;
+            border-right: 4px solid #f59e0b;
+            color: #92400e;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        /* --- الأزرار --- */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 14px rgba(37, 99, 235, 0.3);
+        }
+
+        /* --- الفوتر (Footer) --- */
+        footer {
+            background: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            padding: 20px;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        footer p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        footer span {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        /* أنيميشن بسيط للتحميل */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<!-- الهيدر -->
+<header>
+    <div class="header-container">
+        <div class="logo">MHD</div>
+        <div class="quiz-info">إختبار عشوائي (50 سؤال)</div>
+    </div>
+</header>
+
+<!-- المحتوى -->
+<div class="container">
+    <div id="quiz-container" class="loading">جاري تحميل الأسئلة الـ MCQ...</div>
+    <button class="btn" onclick="checkAnswers()">إنهاء الاختبار وإظهار النتيجة</button>
+</div>
+
+<!-- الفوتر -->
+<footer>
+    <p>تم الإنشاء بواسطة: <span>Eng Mazen Khaled</span> &copy; 2026</p>
+</footer>
+
+<script>
+    let activeQuestions = [];
+
+    // 1. جلب الأسئلة من الـ JSON
+    fetch('questions.json')
+        .then(response => response.json())
+        .then(data => {
+            // لخبطة الأسئلة واختيار 50
+            let shuffled = data.sort(() => 0.5 - Math.random());
+            activeQuestions = shuffled.slice(0, 50);
+            renderQuiz();
+        })
+        .catch(err => {
+            document.getElementById('quiz-container').innerHTML = "❌ خطأ في تحميل الأسئلة. تأكد من تشغيل السيرفر المحلي (Live Server).";
+        });
+
+    // 2. رندرة الأسئلة في الصفحة
+    function renderQuiz() {
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = '';
+
+        activeQuestions.forEach((q, qIndex) => {
+            let qHtml = `
+                <div class="question-card" id="card-${qIndex}">
+                    <div class="question-title">${qIndex + 1}. ${q.question}</div>
+                    <div class="options-group">
+            `;
+            
+            q.options.forEach((opt, optIndex) => {
+                qHtml += `
+                    <label class="option" id="label-${qIndex}-${optIndex}">
+                        <input type="radio" name="q${qIndex}" value="${opt}" data-optindex="${optIndex}"> 
+                        ${opt}
+                    </label>
+                `;
+            });
+
+            qHtml += `
+                    </div>
+                    <div class="answer-hint" id="hint-${qIndex}">📌 الإجابة الصحيحة المقروءة: ${q.answer}</div>
+                </div>
+            `;
+            container.innerHTML += qHtml;
+        });
+    }
+
+    // 3. تصحيح الإجابات بشكل ذكي وملون
+    function checkAnswers() {
+        activeQuestions.forEach((q, qIndex) => {
+            const selectedRadio = document.querySelector(`input[name="q${qIndex}"]:checked`);
+            
+            // تلوين كل الاختيارات للرجوع للحالة العادية أولاً لو داس مرتين
+            q.options.forEach((_, optIndex) => {
+                document.getElementById(`label-${qIndex}-${optIndex}`).classList.remove('correct-choice', 'wrong-choice');
+            });
+
+            if (selectedRadio) {
+                const userInputValue = selectedRadio.value.toLowerCase();
+                const systemAnswer = q.answer.toLowerCase();
+
+                // محاولة ذكية لمعرفة هل اختيار المستخدم موجود جوة نص الإجابة الصح؟
+                // (لأن ملفات الـ PDF ساعات بتكتب الإجابة كـ "Answer: A" أو بتكتب النص كامل)
+                let isCorrect = false;
+                
+                // تنظيف نصوص المقارنة من الرموز الشائعة
+                let cleanUser = userInputValue.replace(/^[a-d\d][\.\)\s\-]+/g, '').trim();
+                let cleanSystem = systemAnswer.replace(/answer:\s*/g, '').replace(/^[a-d\d][\.\)\s\-]+/g, '').trim();
+
+                if (systemAnswer.includes(userInputValue) || cleanSystem.includes(cleanUser)) {
+                    isCorrect = true;
+                }
+
+                const parentLabel = selectedRadio.parentElement;
+                if (isCorrect) {
+                    parentLabel.classList.add('correct-choice');
+                } else {
+                    parentLabel.classList.add('wrong-choice');
+                    document.getElementById(`hint-${qIndex}`).style.display = 'block';
+                }
+            } else {
+                // لو مجاوبش خالص، نظهرله تلميح الإجابة الصح
+                document.getElementById(`hint-${qIndex}`).style.display = 'block';
+            }
+        });
+
+        // طلوع ناعم لأول الصفحة عشان يشوف النتيجة
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
