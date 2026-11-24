@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة MHD للاختبارات</title>
-    <!-- استدعاء خط Cairo عشان يخلي شكل الكلام رايق ومحترف -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-    
+
     <style>
         :root {
             --primary-color: #2563eb;
@@ -85,7 +85,6 @@
             border: 1px solid #bfdbfe;
         }
 
-        /* --- المحتوى الرئيسي --- */
         .container {
             max-width: 900px;
             width: 100%;
@@ -122,7 +121,6 @@
             line-height: 1.6;
         }
 
-        /* --- الاختيارات --- */
         .options-group {
             display: flex;
             flex-direction: column;
@@ -155,7 +153,6 @@
             cursor: pointer;
         }
 
-        /* --- حالة الإجابات عند التصحيح --- */
         .option.correct-choice {
             background-color: #ecfdf5 !important;
             border-color: var(--success) !important;
@@ -180,7 +177,6 @@
             font-size: 0.95rem;
         }
 
-        /* --- الأزرار --- */
         .btn {
             display: block;
             width: 100%;
@@ -222,7 +218,6 @@
             font-weight: 700;
         }
 
-        /* أنيميشن بسيط للتحميل */
         .loading {
             text-align: center;
             padding: 40px;
@@ -234,7 +229,6 @@
 </head>
 <body>
 
-<!-- الهيدر -->
 <header>
     <div class="header-container">
         <div class="logo">MHD</div>
@@ -242,13 +236,11 @@
     </div>
 </header>
 
-<!-- المحتوى -->
 <div class="container">
     <div id="quiz-container" class="loading">جاري تحميل الأسئلة الـ MCQ...</div>
     <button class="btn" onclick="checkAnswers()">إنهاء الاختبار وإظهار النتيجة</button>
 </div>
 
-<!-- الفوتر -->
 <footer>
     <p>تم الإنشاء بواسطة: <span>Eng Mazen Khaled</span> &copy; 2026</p>
 </footer>
@@ -256,7 +248,6 @@
 <script>
     let activeQuestions = [];
 
-    // 1. جلب الأسئلة من الـ JSON
     fetch('questions.json')
         .then(response => response.json())
         .then(data => {
@@ -269,7 +260,6 @@
             document.getElementById('quiz-container').innerHTML = "❌ خطأ في تحميل الأسئلة. تأكد من تشغيل السيرفر المحلي (Live Server).";
         });
 
-    // 2. رندرة الأسئلة في الصفحة
     function renderQuiz() {
         const container = document.getElementById('quiz-container');
         container.innerHTML = '';
@@ -280,11 +270,11 @@
                     <div class="question-title">${qIndex + 1}. ${q.question}</div>
                     <div class="options-group">
             `;
-            
+
             q.options.forEach((opt, optIndex) => {
                 qHtml += `
                     <label class="option" id="label-${qIndex}-${optIndex}">
-                        <input type="radio" name="q${qIndex}" value="${opt}" data-optindex="${optIndex}"> 
+                        <input type="radio" name="q${qIndex}" value="${opt}" data-optindex="${optIndex}">
                         ${opt}
                     </label>
                 `;
@@ -299,11 +289,10 @@
         });
     }
 
-    // 3. تصحيح الإجابات بشكل ذكي وملون
     function checkAnswers() {
         activeQuestions.forEach((q, qIndex) => {
             const selectedRadio = document.querySelector(`input[name="q${qIndex}"]:checked`);
-            
+
             // تلوين كل الاختيارات للرجوع للحالة العادية أولاً لو داس مرتين
             q.options.forEach((_, optIndex) => {
                 document.getElementById(`label-${qIndex}-${optIndex}`).classList.remove('correct-choice', 'wrong-choice');
@@ -316,8 +305,7 @@
                 // محاولة ذكية لمعرفة هل اختيار المستخدم موجود جوة نص الإجابة الصح؟
                 // (لأن ملفات الـ PDF ساعات بتكتب الإجابة كـ "Answer: A" أو بتكتب النص كامل)
                 let isCorrect = false;
-                
-                // تنظيف نصوص المقارنة من الرموز الشائعة
+
                 let cleanUser = userInputValue.replace(/^[a-d\d][\.\)\s\-]+/g, '').trim();
                 let cleanSystem = systemAnswer.replace(/answer:\s*/g, '').replace(/^[a-d\d][\.\)\s\-]+/g, '').trim();
 
@@ -338,7 +326,6 @@
             }
         });
 
-        // طلوع ناعم لأول الصفحة عشان يشوف النتيجة
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 </script>
